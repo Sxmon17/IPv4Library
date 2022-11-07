@@ -1,22 +1,24 @@
+import
+
 public class Subnet {
     int address;
     int mask;
     public Subnet(String address) {
-        this.address = IpUtility.to32BitIp(address.substring(0, address.indexOf("/")));
+        this.address = IpAddress.to32BitIp(address.substring(0, address.indexOf("/")));
         if(address.substring(address.indexOf("/")+1).length() <= 2) {
-            this.mask = IpUtility.to32BitIp(
+            this.mask = IpAddress.to32BitIp(
                     String.valueOf(0xffffffff << 32 - Integer.parseInt(
                             address.substring(address.indexOf("/")+1)
                     ))
             );
         } else {
-            this.mask = IpUtility.to32BitIp(address.substring(address.indexOf("/")+1));
+            this.mask = IpAddress.to32BitIp(address.substring(address.indexOf("/")+1));
         }
     }
 
     public Subnet(IpAddress address, int suffix) {
         this.address = address.getAsInt();
-        this.mask = IpUtility.to32BitIp(
+        this.mask = IpAddress.to32BitIp(
                 String.valueOf(0xffffffff << 32 - suffix)
         );
     }
@@ -27,16 +29,16 @@ public class Subnet {
     }
 
     public Subnet(String address, String mask) {
-        this.address = IpUtility.to32BitIp(address);
-        this.mask = IpUtility.to32BitIp(mask);
+        this.address = IpAddress.to32BitIp(address);
+        this.mask = IpAddress.to32BitIp(mask);
     }
 
     public String getNetMask() {
-        return IpUtility.toString(this.mask);
+        return IpAddress.toDecimalString(this.mask);
     }
 
     public String getNetAddress() {
-        return IpUtility.toString(this.address);
+        return IpAddress.toDecimalString(this.address);
     }
 
     public int getNumberOfHosts() {
@@ -91,6 +93,6 @@ public class Subnet {
 
     @Override
     public String toString() {
-        return IpUtility.toString(address) + "/" + IpUtility.toString(mask);
+        return IpAddress.toDecimalString(address) + "/" + IpAddress.toDecimalString(mask);
     }
 }
