@@ -1,3 +1,5 @@
+package IPCalculator;
+
 public class Subnet {
     int address;
     int mask;
@@ -36,7 +38,7 @@ public class Subnet {
     }
 
     public String getNetAddress() {
-        return IpAddress.toDecimalString(this.address);
+        return new IpAddress((this.address & this.mask)).getAsString();
     }
 
     public int getNumberOfHosts() {

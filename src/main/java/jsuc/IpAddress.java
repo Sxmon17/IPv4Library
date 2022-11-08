@@ -1,3 +1,5 @@
+package IPCalculator;
+
 import java.util.Arrays;
 
 public class IpAddress {
