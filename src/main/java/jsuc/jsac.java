@@ -17,7 +17,7 @@ public class jsac implements Callable<Integer> {
     @Parameters(
             index = "0",
             paramLabel = "ipAddress",
-            description = "Ip address in dotted decimal notation/suffix if no / notation given use --mask"
+            description = "Ip address in dotted decimal notation"
     ) public static String ipAddress;
 
     @Parameters(
@@ -69,4 +69,3 @@ class Contains implements Runnable {
        );
    }
 }
-
