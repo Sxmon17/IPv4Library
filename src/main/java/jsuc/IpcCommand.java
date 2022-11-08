@@ -11,15 +11,18 @@ public class IpcCommand implements Callable<Integer> {
     public static final String GREEN = "\u001B[32m";
 
     @Parameters(
-            index = "0"
+            index = "0",
+            description = "Ip address in dotted decimal notation"
     ) private String addressString;
 
     @Option(
-            names={"-m", "--mask"}
+            names={"-m", "--mask"},
+            description = "subnetmask in dotted decimal notation"
     ) private String mask;
 
     @Option(
-            names={"-c", "--contains"}
+            names={"-c", "--contains"},
+            description = "check if an address is contained in the given subnet"
     ) private String containedAddress;
 
     @Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message") private boolean helpRequested;
