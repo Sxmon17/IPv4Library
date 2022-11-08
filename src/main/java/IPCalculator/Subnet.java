@@ -1,5 +1,3 @@
-import
-
 public class Subnet {
     int address;
     int mask;

@@ -5,7 +5,7 @@ public class TestIpAddress {
         IpAddress defaultAddress = new IpAddress();
         System.out.println("Default Address: " + defaultAddress);
 
-        IpAddress decAddress = new IpAddress(IpUtility.to32BitIp("10.0.0.1"));
+        IpAddress decAddress = new IpAddress(IpAddress.to32BitIp("10.0.0.1"));
         System.out.println("Decimal Address: " + decAddress);
 
         IpAddress octAddress = new IpAddress(192, 168, 2, 1);
@@ -19,10 +19,10 @@ public class TestIpAddress {
 
         IpAddress address = new IpAddress();
 
-        address.set(IpUtility.to32BitIp("192.168.0.1"));
+        address.set(IpAddress.to32BitIp("192.168.0.1"));
         System.out.println("Set Decimal Address: " + address);
         System.out.println("Get as Int: " + address.getAsInt());
-        address.set(IpUtility.to32BitIp("10.0.0.1"));
+        address.set(IpAddress.to32BitIp("10.0.0.1"));
         System.out.println("Set Decimal Address: " + address);
         System.out.println("Get as Int: " + address.getAsInt() + "\n");
 
