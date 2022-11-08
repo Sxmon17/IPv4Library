@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/IPv4Library2.iml" filepath="$PROJECT_DIR$/IPv4Library2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jsuc.iml" filepath="$PROJECT_DIR$/jsuc.iml" />
     </modules>
   </component>
 </project>

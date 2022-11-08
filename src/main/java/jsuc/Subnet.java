@@ -1,4 +1,4 @@
-package IPCalculator;
+package jsuc;
 
 public class Subnet {
     int address;
@@ -41,8 +41,12 @@ public class Subnet {
         return new IpAddress((this.address & this.mask)).getAsString();
     }
 
+    public int getSuffix() {
+        return (int) (Integer.toBinaryString(this.mask).chars().filter(ch -> ch == '1').count());
+    }
+
     public int getNumberOfHosts() {
-        return (int) Math.pow(2, 32 - Integer.toBinaryString(this.mask).chars().filter(ch -> ch == '1').count()) - 2;
+        return (int) (Math.pow(2, 32 - getSuffix()) - 2);
     }
 
     public boolean isInNetwork(IpAddress address) {

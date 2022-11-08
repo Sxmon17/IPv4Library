@@ -1,4 +1,4 @@
-package IPCalculator;
+package jsuc;
 
 import java.util.Arrays;
 
