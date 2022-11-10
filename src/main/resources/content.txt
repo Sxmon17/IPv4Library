@@ -1,7 +1,8 @@
-Suffix: 16
-Netaddress: 192.168.0.0
-Broadcastaddress: 192.168.255.255
-Number of Hosts: 65534
-First Ip in Network: 192.168.0.1
-Last Ip in Network: 192.168.255.254
-Next Subnet: 192.169.0.0/255.255.0.0
+-----------192.168.100.24/255.240.0.0-----------
+Suffix:                       12
+Netaddress:                   192.160.0.0
+Broadcastaddress:             192.175.255.255
+Number of Hosts:              1048574
+First Ip in Network:          192.160.0.1
+Last Ip in Network:           192.175.255.254
+Next Subnet:                  192.176.0.0/255.240.0.0
