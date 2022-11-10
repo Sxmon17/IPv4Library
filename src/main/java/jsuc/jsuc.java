@@ -27,7 +27,6 @@ import java.io.*;
 public class jsuc implements Callable<Integer> {
     public static final String RESET = "\u001B[0m";
     public static final String GREEN = "\u001B[32m";
-    public static int headerLength = 0;
 
     @Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message") private boolean helpRequested;
 
@@ -77,7 +76,10 @@ public class jsuc implements Callable<Integer> {
     }
 }
 
-@Command(name = "info")
+@Command(
+        name = "info",
+        description = "displays calculated network data"
+)
 class Info implements Runnable {
     @Parameters(
             index = "0",
@@ -100,7 +102,10 @@ class Info implements Runnable {
     }
 }
 
-@Command(name = "save")
+@Command(
+        name = "save",
+        description = "save network to history"
+)
 class Save implements Runnable {
     @Parameters(
             index = "0",
@@ -127,9 +132,20 @@ class Save implements Runnable {
     }
 }
 
-@Command(name = "addHeader")
+@Command(
+        name = "addHeader",
+        description = "adds a custom header to the history"
+)
 class AddHeader implements Runnable {
-    @Parameters(index = "0") private String header;
+    @Parameters(
+            index = "0",
+            paramLabel = "header",
+            description = "custom header as string"
+
+    ) private String header;
+
+    @Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message") private boolean helpRequested;
+
     @Override
     public void run() {
         History.write(
@@ -140,8 +156,13 @@ class AddHeader implements Runnable {
     }
 }
 
-@Command(name = "history")
+@Command(
+        name = "history",
+        description = "displays saved history"
+)
 class History implements Runnable {
+    @Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message") private boolean helpRequested;
+
     @Override
     public void run() {
         Path filePath = Path.of("/home/simon/IdeaProjects/jsuc/src/main/resources/output.txt");
@@ -165,15 +186,23 @@ class History implements Runnable {
     }
 }
 
-@Command(name = "reset")
+@Command(
+        name = "reset",
+        description = "resets the saved history"
+)
 class Reset implements Runnable {
+    @Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message") private boolean helpRequested;
+
     @Override
     public void run() {
        History.write("", false);
     }
 }
 
-@Command(name = "contains")
+@Command(
+        name = "contains",
+        description = "Checks if IpAddress is contained in NetworkAddress / Subnetmask"
+)
 class Contains implements Runnable {
     public static final String RESET = "\u001B[0m";
     public static final String GREEN = "\u001B[32m";
@@ -181,13 +210,13 @@ class Contains implements Runnable {
     @Parameters(
             index = "0",
             paramLabel = "IP Address",
-            description = "check if an address is contained in the given subnet"
+            description = "networkaddress in dotted decimal notation"
     ) private String ipAddress;
 
     @Parameters(
             index = "1",
             paramLabel = "Subnetmask",
-            description = "check if an address is contained in the given subnet"
+            description = "subnet mask in dotted decimal notation"
     ) private String subnetmask;
 
     @Parameters(
@@ -195,6 +224,8 @@ class Contains implements Runnable {
             paramLabel = "IP Address",
             description = "check if an address is contained in the given subnet"
     ) private String containedIpAddress;
+
+    @Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message") private boolean helpRequested;
 
    public void run() {
        IpAddress address = new IpAddress(containedIpAddress);
