@@ -1,11 +1,14 @@
 package jsuc;
 
+import org.apache.commons.lang3.StringUtils;
 import picocli.CommandLine;
 import picocli.CommandLine.*;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.concurrent.Callable;
+import java.lang.*;
+import java.io.*;
 
 @Command(
         name = "jsac",
@@ -51,8 +54,7 @@ public class jsuc implements Callable<Integer> {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(
                         "/home/simon/IdeaProjects/jsuc/src/main/resources/content.txt"
                 ));
-                //String.format(format, "Next Subnet: ", subnet.getNextSubnet()).length();
-                writer.write("-----------" + subnet + "-----------" + "\n" + output);
+                writer.write(createSubnetNameHeader(subnet) + output);
                 writer.close();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -78,6 +80,11 @@ public class jsuc implements Callable<Integer> {
         }
 
         return sb.toString();
+    }
+
+    public static String createSubnetNameHeader(Subnet subnet) {
+        int length = String.format("%-30s%s%n", "Next Subnet: ", subnet.getNextSubnet()).length();
+        return StringUtils.center(subnet.toString(), length, '-') + "\n";
     }
 
     public static void main(String... args) {
