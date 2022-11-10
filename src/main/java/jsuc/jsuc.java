@@ -6,6 +6,8 @@ import picocli.CommandLine.*;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.Callable;
 import java.lang.*;
 import java.io.*;
@@ -13,7 +15,14 @@ import java.io.*;
 @Command(
         name = "jsac",
         description = "Subnet Calculator",
-        subcommands = {Info.class, Save.class, Contains.class}
+        subcommands = {
+                Info.class,
+                Save.class,
+                History.class,
+                Reset.class,
+                AddHeader.class,
+                Contains.class
+        }
 )
 public class jsuc implements Callable<Integer> {
     public static final String RESET = "\u001B[0m";
@@ -55,6 +64,7 @@ public class jsuc implements Callable<Integer> {
 
         return sb.toString();
     }
+
 
     @Override
     public Integer call() throws Exception {
@@ -109,25 +119,57 @@ class Save implements Runnable {
     @Override
     public void run() {
         Subnet subnet = new Subnet(new IpAddress(ipAddress), new IpAddress(subnetmask));
+        History.write(createSubnetNameHeader(subnet) + jsuc.createOutput(subnet, false) + "\n", true);
+        System.out.println("Successfully saved");
+    }
+    public static String createSubnetNameHeader(Subnet subnet) {
+        return StringUtils.center(subnet.toString(), 62, '-') + "\n";
+    }
+}
+
+@Command(name = "addHeader")
+class AddHeader implements Runnable {
+    @Parameters(index = "0") private String header;
+    @Override
+    public void run() {
+        History.write(
+                StringUtils.center("", 62, '#') + "\n"
+                     + StringUtils.center(header, 62, '-') + "\n"
+                     + StringUtils.center("", 62, '#') + "\n" + "\n", true
+        );
+    }
+}
+
+@Command(name = "history")
+class History implements Runnable {
+    @Override
+    public void run() {
+        Path filePath = Path.of("/home/simon/IdeaProjects/jsuc/src/main/resources/output.txt");
+        try {
+            System.out.println(Files.readString(filePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void write(String input, boolean append) {
         try{
-            String content = createSubnetNameHeader(subnet) + jsuc.createOutput(subnet, false) + "\n";
             File file = new File("/home/simon/IdeaProjects/jsuc/src/main/resources/output.txt");
-            if(!file.exists()){
-                file.createNewFile();
-            }
-            FileWriter fw = new FileWriter(file,true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(content);
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file, append));
+            bw.write(input);
             bw.close();
-            System.out.println(subnet + " successfully saved");
         } catch(IOException ioe){
             System.out.println("Exception occurred:");
             ioe.printStackTrace();
         }
     }
+}
 
-    public static String createSubnetNameHeader(Subnet subnet) {
-        return StringUtils.center(subnet.toString(), 62, '-') + "\n";
+@Command(name = "reset")
+class Reset implements Runnable {
+    @Override
+    public void run() {
+       History.write("", false);
     }
 }
 
