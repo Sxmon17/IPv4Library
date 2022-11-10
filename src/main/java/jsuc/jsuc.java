@@ -13,55 +13,29 @@ import java.io.*;
 @Command(
         name = "jsac",
         description = "Subnet Calculator",
-        subcommands = {Contains.class}
+        subcommands = {Info.class, Save.class, Contains.class}
 )
 public class jsuc implements Callable<Integer> {
     public static final String RESET = "\u001B[0m";
     public static final String GREEN = "\u001B[32m";
-
-    @Parameters(
-            index = "0",
-            paramLabel = "ipAddress",
-            description = "Ip address in dotted decimal notation"
-    ) public static String ipAddress;
-
-    @Parameters(
-            index="1",
-            paramLabel = "subnetmask",
-            description = "subnetmask in dotted decimal notation"
-    ) public static String subnetmask;
-
-    @Option(names = { "-s", "--save"}) private boolean save;
+    public static int headerLength = 0;
 
     @Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message") private boolean helpRequested;
 
-    @Override
-    public Integer call() throws Exception {
-        Subnet subnet = new Subnet(new IpAddress(ipAddress), new IpAddress(subnetmask));
+    public static String createOutput(Subnet subnet, boolean colored) {
         String format = "%-30s%s%n";
         String output =
-                  String.format(format, "Suffix: ", subnet.getSuffix())
-                + String.format(format, "Netaddress: ", subnet.getNetAddress())
-                + String.format(format, "Broadcastaddress: ", subnet.getBroadcastAddress())
-                + String.format(format, "Number of Hosts: ", subnet.getNumberOfHosts())
-                + String.format(format, "First Ip in Network: ", subnet.getFirstIp())
-                + String.format(format, "Last Ip in Network: ", subnet.getLastIp())
-                + String.format(format, "Next Subnet: ", subnet.getNextSubnet());
-
-        System.out.println(colorOutput(output));
-        if(save) {
-            try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(
-                        "/home/simon/IdeaProjects/jsuc/src/main/resources/content.txt"
-                ));
-                writer.write(createSubnetNameHeader(subnet) + output);
-                writer.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                String.format(format, "Suffix: ", subnet.getSuffix())
+                        + String.format(format, "Netaddress: ", subnet.getNetAddress())
+                        + String.format(format, "Broadcastaddress: ", subnet.getBroadcastAddress())
+                        + String.format(format, "Number of Hosts: ", subnet.getNumberOfHosts())
+                        + String.format(format, "First Ip in Network: ", subnet.getFirstIp())
+                        + String.format(format, "Last Ip in Network: ", subnet.getLastIp())
+                        + String.format(format, "Next Subnet: ", subnet.getNextSubnet());
+        if(colored) {
+            return colorOutput(output);
         }
-
-        return null;
+        return output;
     }
 
     public static String colorOutput(String output) {
@@ -82,14 +56,78 @@ public class jsuc implements Callable<Integer> {
         return sb.toString();
     }
 
-    public static String createSubnetNameHeader(Subnet subnet) {
-        int length = String.format("%-30s%s%n", "Next Subnet: ", subnet.getNextSubnet()).length();
-        return StringUtils.center(subnet.toString(), length, '-') + "\n";
+    @Override
+    public Integer call() throws Exception {
+        System.out.println("Use a subcommand");
+        return null;
     }
-
     public static void main(String... args) {
         int exitCode = new CommandLine(new jsuc()).execute(args);
         System.exit(exitCode);
+    }
+}
+
+@Command(name = "info")
+class Info implements Runnable {
+    @Parameters(
+            index = "0",
+            paramLabel = "ipAddress",
+            description = "Ip address in dotted decimal notation"
+    ) public static String ipAddress;
+
+    @Parameters(
+            index="1",
+            paramLabel = "subnetmask",
+            description = "subnetmask in dotted decimal notation"
+    ) public static String subnetmask;
+
+    @Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message") private boolean helpRequested;
+
+    @Override
+    public void run() {
+        Subnet subnet = new Subnet(new IpAddress(ipAddress), new IpAddress(subnetmask));
+        System.out.println(jsuc.createOutput(subnet, true));
+    }
+}
+
+@Command(name = "save")
+class Save implements Runnable {
+    @Parameters(
+            index = "0",
+            paramLabel = "ipAddress",
+            description = "Ip address in dotted decimal notation"
+    ) public static String ipAddress;
+
+    @Parameters(
+            index="1",
+            paramLabel = "subnetmask",
+            description = "subnetmask in dotted decimal notation"
+    ) public static String subnetmask;
+
+    @Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message") private boolean helpRequested;
+
+    @Override
+    public void run() {
+        Subnet subnet = new Subnet(new IpAddress(ipAddress), new IpAddress(subnetmask));
+        try{
+            String content = createSubnetNameHeader(subnet) + jsuc.createOutput(subnet, false) + "\n";
+            File file = new File("/home/simon/IdeaProjects/jsuc/src/main/resources/output.txt");
+            if(!file.exists()){
+                file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file,true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(content);
+            bw.close();
+            System.out.println(subnet + " successfully saved");
+        } catch(IOException ioe){
+            System.out.println("Exception occurred:");
+            ioe.printStackTrace();
+        }
+    }
+
+    public static String createSubnetNameHeader(Subnet subnet) {
+        return StringUtils.center(subnet.toString(), 62, '-') + "\n";
     }
 }
 
@@ -102,11 +140,23 @@ class Contains implements Runnable {
             index = "0",
             paramLabel = "IP Address",
             description = "check if an address is contained in the given subnet"
+    ) private String ipAddress;
+
+    @Parameters(
+            index = "1",
+            paramLabel = "Subnetmask",
+            description = "check if an address is contained in the given subnet"
+    ) private String subnetmask;
+
+    @Parameters(
+            index = "2",
+            paramLabel = "IP Address",
+            description = "check if an address is contained in the given subnet"
     ) private String containedIpAddress;
 
    public void run() {
        IpAddress address = new IpAddress(containedIpAddress);
-       Subnet subnet = new Subnet(new IpAddress(jsuc.ipAddress), new IpAddress(jsuc.subnetmask));
+       Subnet subnet = new Subnet(new IpAddress(ipAddress), new IpAddress(subnetmask));
        System.out.println(
                "Address " + GREEN + address.getAsString() + RESET
                        + " is in subnet " + GREEN + subnet + RESET + ": "
@@ -114,4 +164,3 @@ class Contains implements Runnable {
        );
    }
 }
-

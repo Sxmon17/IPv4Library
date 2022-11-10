@@ -1,3 +1,11 @@
+---------------192.168.100.100/255.255.255.255----------------
+Suffix:                       32
+Netaddress:                   192.168.100.100
+Broadcastaddress:             192.168.100.100
+Number of Hosts:              -1
+First Ip in Network:          192.168.100.101
+Last Ip in Network:           192.168.100.99
+Next Subnet:                  192.168.100.101/255.255.255.255
 ------------------192.168.0.1/255.255.192.0-------------------
 Suffix:                       18
 Netaddress:                   192.168.0.0
@@ -6,7 +14,6 @@ Number of Hosts:              16382
 First Ip in Network:          192.168.0.1
 Last Ip in Network:           192.168.63.254
 Next Subnet:                  192.168.64.0/255.255.192.0
-
 ------------------192.168.0.5/255.255.255.0-------------------
 Suffix:                       24
 Netaddress:                   192.168.0.0
@@ -15,4 +22,3 @@ Number of Hosts:              254
 First Ip in Network:          192.168.0.1
 Last Ip in Network:           192.168.0.254
 Next Subnet:                  192.168.1.0/255.255.255.0
-
