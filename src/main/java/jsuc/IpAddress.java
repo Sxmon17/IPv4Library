@@ -94,6 +94,14 @@ public class IpAddress {
         return result.deleteCharAt(result.length() - 1).toString();
     }
 
+    public static String getAsBinaryString(String address) {
+        StringBuilder sb = new StringBuilder(Integer.toBinaryString(to32BitIp(address)));
+        sb.insert(8, ".");
+        sb.insert(17, ".");
+        sb.insert(26, ".");
+        return sb.toString();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

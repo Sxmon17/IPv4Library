@@ -40,5 +40,6 @@
     </orderEntry>
     <orderEntry type="library" name="Maven: info.picocli:picocli:4.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.freva:ascii-table:1.8.0" level="project" />
   </component>
 </module>

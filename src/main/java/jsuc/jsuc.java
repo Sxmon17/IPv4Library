@@ -1,5 +1,6 @@
 package jsuc;
 
+import com.github.freva.asciitable.AsciiTable;
 import org.apache.commons.lang3.StringUtils;
 import picocli.CommandLine;
 import picocli.CommandLine.*;
@@ -8,9 +9,13 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.lang.*;
 import java.io.*;
+import java.util.concurrent.SubmissionPublisher;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Command(
         name = "jsac",
@@ -21,6 +26,7 @@ import java.io.*;
                 History.class,
                 Reset.class,
                 AddHeader.class,
+                Bitmap.class,
                 Contains.class
         }
 )
@@ -236,4 +242,31 @@ class Contains implements Runnable {
                        + subnet.isInNetwork(new IpAddress(containedIpAddress))
        );
    }
+}
+
+@Command(name = "bitmap")
+class Bitmap implements Runnable {
+    @Parameters(
+            index = "0",
+            paramLabel = "ipAddress",
+            description = "Ip address in dotted decimal notation"
+    ) public static String ipAddress;
+
+    @Parameters(
+            index="1",
+            paramLabel = "subnetmask",
+            description = "subnetmask in dotted decimal notation"
+    ) public static String subnetmask;
+    @Override
+    public void run() {
+        IpAddress address = new IpAddress(ipAddress);
+        IpAddress mask = new IpAddress(subnetmask);
+        Subnet subnet = new Subnet(address, mask);
+        String[][] data = {
+                {"ipaddress", IpAddress.getAsBinaryString(ipAddress)},
+                {"subnetmask", IpAddress.getAsBinaryString(subnetmask)},
+                {"networkaddress", IpAddress.getAsBinaryString(subnet.getNetAddress())}};
+
+        System.out.println(AsciiTable.getTable(data));
+    }
 }
