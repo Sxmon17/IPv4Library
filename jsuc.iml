@@ -40,6 +40,13 @@
     </orderEntry>
     <orderEntry type="library" name="Maven: info.picocli:picocli:4.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
-    <orderEntry type="library" name="Maven: com.github.freva:ascii-table:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: de.vandermeer:asciitable:0.3.2" level="project" />
+    <orderEntry type="library" name="Maven: de.vandermeer:ascii-utf-themes:0.0.1" level="project" />
+    <orderEntry type="library" name="Maven: de.vandermeer:skb-interfaces:0.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr:ST4:4.0.8" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr:antlr-runtime:3.5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr:antlr4:4.5.1" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.12" level="project" />
+    <orderEntry type="library" name="Maven: de.vandermeer:char-translation:0.0.2" level="project" />
   </component>
 </module>

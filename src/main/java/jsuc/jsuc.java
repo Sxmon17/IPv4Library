@@ -1,21 +1,25 @@
-package jsuc;
+ package jsuc;
 
-import com.github.freva.asciitable.AsciiTable;
+import de.vandermeer.asciitable.AT_Row;
+import de.vandermeer.asciitable.AsciiTable;
+import de.vandermeer.asciitable.CWC_FixedWidth;
+import de.vandermeer.asciitable.CWC_LongestWordMax;
+import de.vandermeer.asciithemes.TA_GridThemes;
+import de.vandermeer.asciithemes.a7.A7_Grids;
+import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 import org.apache.commons.lang3.StringUtils;
 import picocli.CommandLine;
 import picocli.CommandLine.*;
+import picocli.CommandLine.Help.Ansi;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.lang.*;
 import java.io.*;
-import java.util.concurrent.SubmissionPublisher;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Command(
         name = "jsac",
@@ -84,7 +88,7 @@ public class jsuc implements Callable<Integer> {
 
 @Command(
         name = "info",
-        description = "displays calculated network data"
+        description = "%n@|bold,underline Description|@:%n%n"
 )
 class Info implements Runnable {
     @Parameters(
@@ -246,6 +250,10 @@ class Contains implements Runnable {
 
 @Command(name = "bitmap")
 class Bitmap implements Runnable {
+    public static final String RED = "\u001B[31m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String RESET = "\u001B[0m";
+
     @Parameters(
             index = "0",
             paramLabel = "ipAddress",
@@ -257,16 +265,34 @@ class Bitmap implements Runnable {
             paramLabel = "subnetmask",
             description = "subnetmask in dotted decimal notation"
     ) public static String subnetmask;
+
     @Override
     public void run() {
-        IpAddress address = new IpAddress(ipAddress);
-        IpAddress mask = new IpAddress(subnetmask);
-        Subnet subnet = new Subnet(address, mask);
-        String[][] data = {
-                {"ipaddress", IpAddress.getAsBinaryString(ipAddress)},
-                {"subnetmask", IpAddress.getAsBinaryString(subnetmask)},
-                {"networkaddress", IpAddress.getAsBinaryString(subnet.getNetAddress())}};
+        System.out.println(generateTable(new IpAddress(ipAddress), new IpAddress(subnetmask)));
+    }
 
-        System.out.println(AsciiTable.getTable(data));
+    public String colorBits(String uncoloredString) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < uncoloredString.length(); i++) {
+            switch (uncoloredString.charAt(i)) {
+                case '0' -> sb.append(RED + "0");
+                case '1' -> sb.append(GREEN + "1");
+                case '.' -> sb.append(RESET + ".");
+            }
+        }
+        sb.append(RESET);
+        return sb.toString();
+    }
+
+    public String generateTable(IpAddress address, IpAddress mask) {
+        Subnet subnet = new Subnet(address, mask);
+        String format = "%-27s%s%n";
+        System.out.println(StringUtils.center("", 62, '='));
+        System.out.printf(format, "ipAddress", colorBits(IpAddress.getAsBinaryString(address.toString())));
+        System.out.printf(format, "subnetmask", colorBits(IpAddress.getAsBinaryString(mask.toString())));
+        System.out.println(StringUtils.center("", 62, '='));
+        System.out.printf(format, "networkaddress (AND)", colorBits(IpAddress.getAsBinaryString(subnet.getNetAddress())));
+        System.out.println(StringUtils.center("", 62, '='));
+        return "";
     }
 }
